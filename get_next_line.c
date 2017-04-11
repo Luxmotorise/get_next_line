@@ -44,7 +44,6 @@ char	*ft_realloc(char *buff, int n)
 int		get_next_line(const int fd, char **line)
 {
 	static char		*lastbuff;
-	size_t			bufferlen;
 	char			*buff;
 	int				eol;
 	int				res;
@@ -52,12 +51,12 @@ int		get_next_line(const int fd, char **line)
 
 	if (ft_strchr(lastbuff, '\n'))
 	{
+		*line = ft_realloc(findeol(lastbuff));
 		*line = ft_strncpy(line, lastbuff, findeol(lastbuff));
+		lastbuff = ft_realloc(ft_strlen(lastbuff[eol]));
 		lastbuff = ft_strcpy(lastbuff, lastbuff[eol]);
 		return (1);
 	}
-	if (bufferlen == 0)
-		bufferlen = BUFF_SIZE;
 	eol = -1;
 	n = 0;
 	while (eol == -1)
@@ -80,7 +79,6 @@ int		get_next_line(const int fd, char **line)
 			// printf("toto\n");
 			if (eol == -1)
 			{
-				bufferlen += BUFF_SIZE;
 				n++;
 			}
 		}
@@ -88,7 +86,9 @@ int		get_next_line(const int fd, char **line)
 	}
 	// printf("%d\n", eol);
 	// printf("%zu", bufferlen);
+	*line = ft_realloc(*line, ft_strlen(lastbuff) + eol);
 	*line = lastbuff + ft_strncpy(line, buff, eol);
+	lastbuff = ft_realloc(lastbuff, ft_strlen(buff[eol]));
 	lastbuff = ft_strcpy(lastbuff, buff[eol]);
 	return (1);
 }
