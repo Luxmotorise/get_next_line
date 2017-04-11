@@ -11,79 +11,84 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include "./libft/libft.h"
 #include <stdio.h>
 
-int	findEOL(char *buff)
+int		findeol(char *buff)
 {
-	char	EOL;
+	char	eol;
 	int		i;
 
-	EOL = '\n';
+	eol = '\n';
 	i = 0;
 	while (buff[i])
 	{
-		if (buff[i] == EOL)
-			return (i + 1);
+		// printf("coco\n");
+		if (buff[i] == eol)
+			return (i);
 		++i;
 	}
 	return (-1);
 }
 
-void	ft_bzero(void *s, size_t n)
+char	*ft_realloc(char *buff, int n)
 {
-	size_t i;
+	char *t;
 
-	i = 0;
-	while (i < n)
-	{
-		((char *)s)[i] = '\0';
-		i++;
-	}
+	t = malloc(n + 1);
+	t[0] = 0;
+	ft_strcat(t, buff);
+	return (t);
 }
 
-char	*ft_strnew(size_t size)
+int		get_next_line(const int fd, char **line)
 {
-	char		*str;
-
-	str = (char *)malloc(size + 1);
-	if (str == NULL)
-		return (0);
-	ft_bzero(str, size + 1);
-	return (str);
-}
-
-
-int get_next_line(const int fd, char **line)
-{
-	static size_t	bufferlen;
+	static char		*lastbuff;
+	size_t			bufferlen;
 	char			*buff;
-	int				EOL;
+	int				eol;
 	int				res;
+	int				n;
 
+	if (ft_strchr(lastbuff, '\n'))
+	{
+		*line = ft_strncpy(line, lastbuff, findeol(lastbuff));
+		lastbuff = ft_strcpy(lastbuff, lastbuff[eol]);
+		return (1);
+	}
 	if (bufferlen == 0)
 		bufferlen = BUFF_SIZE;
-	EOL = -1;
-	while (EOL == -1)
+	eol = -1;
+	n = 0;
+	while (eol == -1)
 	{
-		buff = ft_strnew(bufferlen);
-		res = read(fd, buff + bufferlen, BUFF_SIZE);
+		buff = ft_realloc(buff, n * BUFF_SIZE);
+		res = read(fd, buff + eol, BUFF_SIZE);
 		if (res == -1)
 		{
 			free(buff);
 			return (-1);
 		}
 		if (res == 0)
-			EOL = 0;
+			eol = 0;
 		else
 		{
-			printf("toto\n");
-			EOL = findEOL(buff);
-			if (EOL == -1)
+			// printf("toto\n");
+			// printf("%s\n", buff);
+			eol = findeol(buff);
+			// printf("%d\n", eol);
+			// printf("toto\n");
+			if (eol == -1)
+			{
 				bufferlen += BUFF_SIZE;
+				n++;
+			}
 		}
+		eol = eol + (n * BUFF_SIZE);
 	}
-	printf("%d\n", EOL);
-	printf("%zu", bufferlen);
-	//clamp bufferlen
+	// printf("%d\n", eol);
+	// printf("%zu", bufferlen);
+	*line = lastbuff + ft_strncpy(line, buff, eol);
+	lastbuff = ft_strcpy(lastbuff, buff[eol]);
 	return (1);
 }
