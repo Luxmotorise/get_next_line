@@ -51,9 +51,9 @@ int		get_next_line(const int fd, char **line)
 
 	if (ft_strchr(lastbuff, '\n'))
 	{
-		*line = ft_realloc(findeol(lastbuff));
+		*line = ft_realloc(*line, findeol(lastbuff));
 		*line = ft_strncpy(line, lastbuff, findeol(lastbuff));
-		lastbuff = ft_realloc(ft_strlen(lastbuff[eol]));
+		lastbuff = ft_realloc(lastbuff, ft_strlen(lastbuff[eol]));
 		lastbuff = ft_strcpy(lastbuff, lastbuff[eol]);
 		return (1);
 	}
