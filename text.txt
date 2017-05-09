@@ -1,3 +1,3 @@
-esgsrgrgrhftfjftjtfjftjftjftjftjfjfyjfthfthftesf
-iueuifheisuhfuisehfiueshfiuhseuisdfsdfsdfsdfsdfsdfeshui
-fse
+On considère que get_next_line a un comportement indeterminé si entre deux
+appels, un même descripteur de fichier désigne deux fichiers différents alors que la
+lecture du premier fichier n’était pas terminée
